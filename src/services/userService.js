@@ -1,4 +1,4 @@
-import {publicAPI, api} from "../api/api.js";
+import {publicAPI, protectedApi} from "../api/api.js";
 
 export const userService = {
 
@@ -7,6 +7,6 @@ export const userService = {
     },
 
     getUserInfo: (username) => {
-        return api.get(`/users/username/${username}`);
+        return protectedApi.get(`/users/username/${username}`);
     }
 };

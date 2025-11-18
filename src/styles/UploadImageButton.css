@@ -1,0 +1,26 @@
+.upload-image-btn {
+    position: fixed;
+    right: 30px;
+    top: calc(30% + 70px);
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 50%;
+    background-color: #28a745;
+    color: white;
+    font-size: 36px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.upload-image-btn:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}

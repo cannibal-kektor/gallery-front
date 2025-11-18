@@ -12,7 +12,7 @@ export const publicAPI = axios.create({
     }
 });
 
-export const api = axios.create({
+export const protectedApi = axios.create({
     baseURL: API_URL,
     timeout: API_TIMEOUT,
     headers: {
@@ -20,4 +20,4 @@ export const api = axios.create({
     }
 });
 
-setupAuthenticationInterceptors(api);
+setupAuthenticationInterceptors(protectedApi);
