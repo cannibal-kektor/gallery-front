@@ -14,8 +14,24 @@ const validationRules = {
     },
     email: {
         pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        message: "Please enter a valid email address.",
+        message: "Please, enter a valid email address.",
         test: email => email && validationRules.email.pattern.test(email)
+    },
+    description: {
+        maxLength: 1000,
+        message: "Description should not be blank. Max characters : 1000",
+        test: description => description &&
+            description.trim().length !== 0 &&
+            description.length < validationRules.description.maxLength
+    },
+    imageFile: {
+        message: "Please, upload a valid image.",
+        validExtensions: ["jpg", "jpeg", "png"],
+        test: imageFile => imageFile &&
+            imageFile.type.startsWith('image/') &&
+            validationRules.imageFile.validExtensions.includes(
+                imageFile.name.split('.').pop()
+            )
     },
 };
 

@@ -1,6 +1,7 @@
 import {getAccessToken, getRefreshToken, setTokens} from "../utils/authManager.js";
 import {store} from "../store/store.js";
 import {logout} from "../actions/authThunks.js";
+import {publicAPI} from "./api.js";
 
 let isRefreshing = false;
 let refreshSubscribers = [];
@@ -31,13 +32,13 @@ const clearState = () => {
     store.dispatch(logout());
 };
 
-const refreshAccessToken = async (API) => {
+const refreshAccessToken = async () => {
     let refreshToken = getRefreshToken();
     if (!refreshToken) {
         throw new Error("No refresh token available");
     }
     try {
-        const response = await API.post("/auth/refresh", {refreshToken});
+        const response = await publicAPI.post("/auth/refresh", {refreshToken});
         let {accessToken: newAccessToken, refreshToken: newRefreshToken} = response.data;
         if (!newAccessToken || !newRefreshToken) {
             throw new Error("No access or refresh token in response");
@@ -78,17 +79,12 @@ export const setupAuthenticationInterceptors = (apiInstance) => {
 
             if (error.response?.status === 401 && !originalRequest._retry) {
 
-                if (originalRequest.url.includes("/auth/refresh")) {
-                    clearState();
-                    return Promise.reject(error);
-                }
-
                 originalRequest._retry = true;
 
                 if (!isRefreshing) {
                     isRefreshing = true;
                     try {
-                        await refreshAccessToken(apiInstance);
+                        await refreshAccessToken();
                         isRefreshing = false;
                     } catch (error) {
                         isRefreshing = false;
