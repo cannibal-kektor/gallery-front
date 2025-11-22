@@ -4,7 +4,7 @@ import {imageService} from "../services/imageService";
 import {clearImages} from "../store/imageSlice.js";
 import GenericForm from "./GenericForm.jsx";
 import {description, imageFile} from "../utils/formFields.js";
-import "../styles/UploadImageForm.css";
+import Overlay from "./Overlay.jsx";
 
 const UploadImageForm = ({onClose}) => {
 
@@ -27,16 +27,10 @@ const UploadImageForm = ({onClose}) => {
             .finally(() => setUploading(false));
     };
 
-    const handleOverlayClick = (e) => {
-        if (e.target === e.currentTarget) {
-            onClose();
-        }
-    };
-
     return (
-        <div className="upload-form-overlay" onClick={handleOverlayClick}>
+        <Overlay onClose={onClose}>
             <GenericForm
-                title="Upload ImageBox"
+                title="Upload Image"
                 submitAction={submitAction}
                 fields={[imageFile, description]}
                 processing={uploading}
@@ -44,7 +38,7 @@ const UploadImageForm = ({onClose}) => {
                 buttonText="Upload"
                 onClose={onClose}
             />
-        </div>
+        </Overlay>
     );
 };
 

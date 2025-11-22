@@ -3,30 +3,18 @@ import {imageService} from "../services/imageService.js";
 
 export const getImages = createAsyncThunk(
     "images/fetchAllImages",
-    async (searchControls, {rejectWithValue}) => {
-        const params = constructQueryParams(searchControls);
-        try {
-            const response = await imageService.getImages(params);
-            return response.data;
-        } catch (error) {
-            console.warn(error.message);
-            return rejectWithValue(error.response.data);
-        }
-    }
-);
-
-export const getImagesByUserId = createAsyncThunk(
-    "images/fetchImagesByUserId",
     async ({
-               userId,
+               initialLoad,
                ...searchControls
            }, {rejectWithValue}) => {
         const params = constructQueryParams(searchControls);
         try {
-            const response = await imageService.getImagesByUserId(userId, params);
-            return response.data;
+            const response = await imageService.getImages(params);
+            return {
+                data: response.data,
+                initialLoad
+            };
         } catch (error) {
-            console.warn(error.message);
             return rejectWithValue(error.response.data);
         }
     }
@@ -36,14 +24,17 @@ export const getImagesByUsername = createAsyncThunk(
     "images/fetchImagesByUsername",
     async ({
                username,
+               initialLoad,
                ...searchControls
            }, {rejectWithValue}) => {
         const params = constructQueryParams(searchControls);
         try {
             const response = await imageService.getImagesByUsername(username, params);
-            return response.data;
+            return {
+                data: response.data,
+                initialLoad
+            }
         } catch (error) {
-            console.warn(error.message);
             return rejectWithValue(error.response.data);
         }
     }
@@ -59,12 +50,25 @@ export const likeImage = createAsyncThunk(
                 imageIndex
             };
         } catch (error) {
-            console.warn(error.message);
             return rejectWithValue(error.response.data);
         }
     }
 );
 
+export const editImage = createAsyncThunk(
+    "images/editImage",
+    async ({imageId, formData, imageIndex}, {rejectWithValue}) => {
+        try {
+            const response = await imageService.editImage(imageId, formData);
+            return {
+                data: response.data,
+                imageIndex
+            };
+        } catch (error) {
+            return rejectWithValue(error.response.data);
+        }
+    }
+);
 
 const constructQueryParams = (searchControls) => {
     return {

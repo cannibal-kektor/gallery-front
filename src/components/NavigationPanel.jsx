@@ -1,9 +1,11 @@
 import {Link, NavLink, useParams} from "react-router-dom";
+import {useSelector} from "react-redux";
 import "../styles/NavigationPanel.css";
 
 const NavigationPanel = () => {
 
     const {username} = useParams();
+    const {user} = useSelector((state) => state.auth);
 
     return (
         <nav className="nav-container">
@@ -12,10 +14,11 @@ const NavigationPanel = () => {
                 <NavLink to="/" className={({isActive}) => `nav-link ${isActive ? "nav-link-active" : ""}`}>
                     All
                 </NavLink>
-                <NavLink to="/my-images" className={({isActive}) => `nav-link ${isActive ? "nav-link-active" : ""}`}>
+                <NavLink to={"/user/" + user.username}
+                         className={({isActive}) => `nav-link ${isActive ? "nav-link-active" : ""}`}>
                     Mine
                 </NavLink>
-                {username &&
+                {username && username !== user.username &&
                     <NavLink to={"/user/" + username}
                              className={({isActive}) => `nav-link ${isActive ? "nav-link-active" : ""}`}>
                         {username}`s

@@ -1,0 +1,81 @@
+.comments-section {
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.comments-section h3 {
+    text-align: left;
+    margin-bottom: 1rem;
+    color: #1e293b;
+    font-size: 1.3rem;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.comments-list {
+    flex: 1;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.infinite-scroll-component::-webkit-scrollbar {
+    width: 6px;
+}
+
+.infinite-scroll-component::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+}
+
+.infinite-scroll-component::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.infinite-scroll-component::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.comment-form {
+    display: flex;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+    flex-shrink: 0;
+}
+
+.comment-input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.comment-input:focus {
+    border-color: #3b82f6;
+}
+
+.comment-submit-btn {
+    padding: 0.75rem 1.5rem;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.comment-submit-btn:hover {
+    background: #2563eb;
+}
+
+.comment-submit-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}

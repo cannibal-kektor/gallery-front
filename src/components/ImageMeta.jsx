@@ -4,27 +4,15 @@ import {useDispatch} from "react-redux";
 import {likeImage} from "../actions/imageThunks.js";
 import {useState} from "react";
 import "../styles/ImageMeta.css";
+import {formatDate} from "../utils/utils.js";
 
 const ImageMeta = ({image, imageIndex}) => {
 
     const dispatch = useDispatch();
     const [processing, setProcessing] = useState(false);
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        const timeOptions = {
-            hour: "2-digit",
-            minute: "2-digit",
-        };
-        const time = date.toLocaleTimeString("ru", timeOptions);
-        const formattedDate = date.toLocaleDateString();
-        return `${time} ${formattedDate}`;
-    };
-
     const handleLikeClick = () => {
-        if (processing === true) {
-            return;
-        }
+        if (processing)  return;
         setProcessing(true);
         dispatch(likeImage({imageId: image.id, imageIndex: imageIndex}))
             .finally(() => setProcessing(false));
@@ -37,7 +25,7 @@ const ImageMeta = ({image, imageIndex}) => {
                 <Link to={"/user/" + image.username}>{image.username}</Link>
             </span>
             <div className="image-meta-right">
-                <span className="image-upload-date">{formatDate(image.uploadedAt)}</span>
+                <span className="image-upload-date">Uploaded at: {formatDate(image.uploadedAt)}</span>
                 <Like
                     isLiked={image.isLiked}
                     likesCount={image.likesCount}

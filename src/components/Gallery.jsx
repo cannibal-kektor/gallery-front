@@ -8,17 +8,42 @@ import TimeRangeControls from "./TimeRangeControls.jsx";
 import UploadImageButton from "./UploadImageButton.jsx";
 import "../styles/Gallery.css";
 
-const Gallery = ({fetchFunction}) => {
+const Gallery = ({fetchFunction, username}) => {
     const dispatch = useDispatch();
     const {images, hasNext, sortBy, sortOrder, tillDate} = useSelector((state) => state.images);
 
     const [loading, setLoading] = useState(false);
     const [errorInfo, setErrorInfo] = useState(null);
 
+    useEffect(() => {
+        return () => {
+            dispatch(clearImages());
+        };
+    }, [username]);
+
+    useEffect(() => {
+        if (images.length === 0 && hasNext && !loading) {
+            setLoadingState();
+            loadImages({
+                sortBy,
+                sortOrder,
+                tillDate,
+                size: 9,
+                initialLoad: true
+            });
+        }
+    }, [images, sortBy, sortOrder, tillDate, fetchFunction, username]);
+
+    const loadImages = (params) => {
+        setLoadingState();
+        dispatch(fetchFunction(params))
+            .unwrap()
+            .catch(error => setErrorInfo(error.detail))
+            .finally(() => setLoading(false));
+    };
+
     const loadMoreImages = () => {
         if (loading || !hasNext) return;
-
-        setLoadingState();
 
         const lastImage = images[images.length - 1];
         let cursorParams = null;
@@ -29,37 +54,21 @@ const Gallery = ({fetchFunction}) => {
                 "cursor-last-id": lastImage.id
             };
         }
-
-        dispatch(fetchFunction({sortBy, sortOrder, cursorParams, tillDate, size: 10}))
-            .unwrap()
-            .catch(error => setErrorInfo(error.detail))
-            .finally(() => setLoading(false));
+        loadImages({
+            sortBy,
+            sortOrder,
+            cursorParams,
+            tillDate,
+            size: 6,
+            initialLoad: false
+        });
     };
 
-
-    useEffect(() => {
-        if (images.length === 0 && hasNext && !loading) {
-
-            setLoadingState();
-
-            dispatch(fetchFunction({sortBy, sortOrder, tillDate, size: 6}))
-                .unwrap()
-                .catch(error => setErrorInfo(error.detail))
-                .finally(() => setLoading(false));
-        }
-    }, [dispatch, fetchFunction, hasNext, images, sortBy, sortOrder, tillDate]);
 
     const setLoadingState = () => {
         setLoading(true);
         setErrorInfo(null);
     };
-
-    useEffect(() => {
-        return () => {
-            dispatch(clearImages());
-        };
-    }, []);
-
 
     return (
         <div className="gallery-container">
@@ -78,7 +87,6 @@ const Gallery = ({fetchFunction}) => {
                 images={images}
                 onLoadMore={loadMoreImages}
                 hasMore={hasNext}
-                loading={loading}
             />
             <ScrollToTopButton/>
             <UploadImageButton/>

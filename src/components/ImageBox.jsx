@@ -2,7 +2,7 @@ import ImageMeta from "./ImageMeta.jsx";
 import {useEffect, useState} from "react";
 import "../styles/ImageBox.css";
 
-const ImageBox = ({image, index}) => {
+const ImageBox = ({image, index, onImageClick}) => {
 
     const [isVisible, setIsVisible] = useState(false);
 
@@ -10,11 +10,15 @@ const ImageBox = ({image, index}) => {
         setIsVisible(true);
     }, []);
 
+    const handleImageClick = () => {
+        onImageClick(image, index);
+    };
+
     let imageClass = `image-box ${isVisible ? "image-card-fade-in" : "image-card-fade-out"}`;
 
     return (
         <div className={imageClass} key={image.id}>
-            <div className="image-wrapper">
+            <div className="image-wrapper" onClick={handleImageClick}>
                 <img
                     src={image.url}
                     alt={image.description || "ImageBox"}

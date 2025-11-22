@@ -10,7 +10,6 @@ const SortControls = () => {
     const handleSortChange = (newSortBy) => {
         let newSortOrder = 'desc';
 
-        // If clicking the same sort field, toggle order
         if (newSortBy === sortBy) {
             newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
         }

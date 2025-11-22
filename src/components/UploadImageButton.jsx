@@ -9,7 +9,7 @@ const UploadImageButton = () => {
     const closeForm = () => setIsFormOpen(false);
 
     return (
-        <>
+        <div>
             <button
                 className="upload-image-btn"
                 onClick={openForm}
@@ -17,7 +17,7 @@ const UploadImageButton = () => {
                 +
             </button>
             {isFormOpen && <UploadImageForm onClose={closeForm}/>}
-        </>
+        </div>
     );
 };
 

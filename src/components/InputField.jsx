@@ -12,13 +12,25 @@ const InputField = ({
                     }) => {
 
     const isTextArea = type === "textArea";
-    const valueProp = type !== "file" ? {value: value || ""} : {};
+
+    let valueProp;
+    switch (type) {
+        case "textArea":
+            valueProp = { defaultValue: value };
+            break;
+        case "file":
+            valueProp = {};
+            break;
+        default:
+            valueProp = { value: value || "" };
+    }
+
     const commonProps = {
         id,
         name,
         onChange,
         required,
-        className: error ? "input-error" : "",
+        className: error ? "input-error" : ""
     };
 
     return (

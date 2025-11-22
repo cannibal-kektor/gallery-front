@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {setDateRange} from "../store/imageSlice.js";
 import "../styles/TimeRangeControls.css";
@@ -7,6 +7,13 @@ const TimeRangeControls = () => {
 
     const dispatch = useDispatch();
     const [selectedRange, setSelectedRange] = useState(null);
+
+    useEffect(() => {
+        return ()=> {
+            setSelectedRange(null)
+            dispatch(setDateRange({tillDate: null}));
+        };
+    }, []);
 
     const timeRanges = [
         {key: "last-day", label: "Day"},

@@ -26,7 +26,7 @@ const imageFile = {
     id: "imageFile",
     name: "imageFile",
     type: "file",
-    label: "ImageBox File",
+    label: "Image File",
     accept: "image/*"
 };
 

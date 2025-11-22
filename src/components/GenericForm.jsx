@@ -58,7 +58,7 @@ const GenericForm = ({
 
                 {errorInfo &&
                     <div className="form-error-info">
-                        {errorInfo || `${title} error`}
+                        {errorInfo}
                     </div>
                 }
 

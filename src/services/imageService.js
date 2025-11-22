@@ -6,10 +6,6 @@ export const imageService = {
         return protectedApi.get("/images", {params});
     },
 
-    getImagesByUserId: (userId, params) => {
-        return protectedApi.get(`/images/user/${userId}`, {params});
-    },
-
     getImagesByUsername: (username, params) => {
         return protectedApi.get(`/images/username/${username}`, {params});
     },
@@ -24,5 +20,13 @@ export const imageService = {
 
     likeImage: (imageId) => {
         return protectedApi.post(`/images/${imageId}/like`);
+    },
+
+    deleteImage: (imageId) => {
+        return protectedApi.delete(`/images/${imageId}`);
+    },
+
+    editImage: (imageId, formData) => {
+        return protectedApi.put(`/images/${imageId}`, formData);
     }
 };
