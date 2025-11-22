@@ -13,6 +13,7 @@ body {
 
 .App {
     min-height: 100vh;
+    background: linear-gradient(135deg, #d0e9fc 0%, #a0d3f8 100%);
 }
 
 button {

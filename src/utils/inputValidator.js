@@ -14,8 +14,31 @@ const validationRules = {
     },
     email: {
         pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        message: "Please enter a valid email address.",
+        message: "Please, enter a valid email address.",
         test: email => email && validationRules.email.pattern.test(email)
+    },
+    description: {
+        maxLength: 1000,
+        message: "Description should not be blank. and has characters less or equal than 1000 symbols",
+        test: description => description &&
+            description.trim().length !== 0 &&
+            description.length <= validationRules.description.maxLength
+    },
+    imageFile: {
+        message: "Please, upload a valid image.",
+        validExtensions: ["jpg", "jpeg", "png"],
+        test: imageFile => imageFile &&
+            imageFile.type.startsWith('image/') &&
+            validationRules.imageFile.validExtensions.includes(
+                imageFile.name.split('.').pop()
+            )
+    },
+    comment: {
+        maxLength: 500,
+        message: "Comment should not be blank and has characters less or equal than 500 symbols",
+        test: comment => comment &&
+            comment.trim().length !== 0 &&
+            comment.length <= validationRules.comment.maxLength
     },
 };
 
@@ -27,7 +50,7 @@ export const validateForm = formData => {
     return errors;
 };
 
-const validateField = (name, value) => {
+export const validateField = (name, value) => {
     const rules = validationRules[name];
     return !rules || rules.test(value) ? "" : rules.message;
 };

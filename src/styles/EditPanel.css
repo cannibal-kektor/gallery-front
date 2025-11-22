@@ -1,0 +1,39 @@
+.edit-section {
+    display: flex;
+    gap: 12px;
+    padding: 1rem 0 0;
+}
+
+.edit-section .edit-btn,
+.edit-section .remove-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.edit-section .edit-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.edit-section .edit-btn:hover {
+    background-color: #45a049;
+    transform: translateY(-1px);
+}
+
+.edit-section .remove-btn {
+    background-color: #f44336;
+    color: white;
+}
+
+.edit-section .remove-btn:hover {
+    background-color: #da190b;
+    transform: translateY(-1px);
+}
