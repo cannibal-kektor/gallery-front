@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {commentService} from "../services/commentService.js";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Spinner from "./Spinner.jsx";
@@ -7,9 +7,13 @@ import Comment from "./Comment.jsx";
 import PullDownInfo from "./PullDownInfo.jsx";
 import DeleteCommentConfirmation from "./DeleteCommentConfirmation.jsx";
 import {validateForm} from "../utils/inputValidator.js";
+import {useSelector} from "react-redux";
 import "../styles/CommentsSection.css";
+import {selectUser} from "../store/selectors.js";
 
 const CommentsSection = ({image}) => {
+
+    const user = useSelector(selectUser);
 
     const [loading, setLoading] = useState(false);
     const [errorInfo, setErrorInfo] = useState(null);
@@ -24,35 +28,39 @@ const CommentsSection = ({image}) => {
     const [isDeleteConfirmOpened, setDeleteConfirmationOpen] = useState(false);
     const [commentToDelete, setCommentToDelete] = useState(null);
 
-    const openDeleteConfirm = (comment) => {
+    const openDeleteConfirm = useCallback((comment) => {
         setDeleteConfirmationOpen(true);
         setCommentToDelete(comment);
-    };
-    const closeDeleteConfirm = () => {
-        setDeleteConfirmationOpen(false);
-        setCommentToDelete(null);
-    };
-
-    useEffect(() => {
-        return () => {
-            clearState();
-        };
     }, []);
 
+    const closeDeleteConfirm = useCallback(() => {
+        setDeleteConfirmationOpen(false);
+        setCommentToDelete(null);
+    }, []);
+
+    const refreshContent = useCallback(() => {
+        setErrorInfo(null);
+        setPage(0);
+        setTotal(0);
+        setHasMoreComments(true);
+        setCommentText("");
+        setCommentErrorInfo(null);
+        setComments([]);
+    }, []);
+
+    useEffect(() => () => refreshContent(), [refreshContent]);
 
     useEffect(() => {
         if (comments.length === 0 && hasMoreComments && !loading) {
             loadComments(true);
         }
-    }, [image, comments]);
-
+    }, [image, comments, hasMoreComments]);
 
     const loadMoreComments = () => {
-        if (loading) return;
-        loadComments(false);
+        if (!loading) loadComments(false);
     };
 
-    const loadComments = (isInitialLoad) => {
+    const loadComments = useCallback((isInitialLoad) => {
         setLoading(true);
         commentService.getImageComments(image.id, constructParams())
             .then(response => {
@@ -68,10 +76,9 @@ const CommentsSection = ({image}) => {
             })
             .catch((error) => setErrorInfo(error.response?.data?.detail || "Failed to load comments"))
             .finally(() => setLoading(false));
-    };
+    }, [image, page]);
 
-
-    const handleCommentSubmit = (e) => {
+    const handleCommentSubmit = useCallback((e) => {
         e.preventDefault();
 
         const errors = validateForm({"comment": commentText});
@@ -84,33 +91,21 @@ const CommentsSection = ({image}) => {
             content: commentText,
         };
         commentService.postComment(image.id, newComment)
-            .then(() => clearState())
+            .then(() => refreshContent())
             .catch((error) => setCommentErrorInfo(error.response?.data?.detail || "Comment sending fail"));
 
-    };
+    }, [commentText, image.id, refreshContent]);
 
-    const constructParams = () => ({
+    const constructParams = useCallback(() => ({
         page,
         size: 10,
         sort: ["createdAt,desc", "id,desc"]
-    });
+    }), [page]);
 
-    const refreshContent = () => clearState();
-
-    const clearState = () => {
-        setErrorInfo(null);
-        setPage(0);
-        setTotal(0);
-        setHasMoreComments(true);
-        setCommentText("");
-        setCommentErrorInfo(null);
-        setComments([]);
-    };
-
-    const onCommentChange = (e) => {
+    const onCommentChange = useCallback((e) => {
         setCommentErrorInfo(null);
         setCommentText(e.target.value);
-    };
+    }, []);
 
     return (
         <div className="comments-section">
@@ -140,6 +135,7 @@ const CommentsSection = ({image}) => {
                         <Comment
                             key={comment.id}
                             comment={comment}
+                            currentUserId={user.id}
                             onDelete={openDeleteConfirm}/>
                     ))}
                 </div>

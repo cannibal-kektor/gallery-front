@@ -1,12 +1,12 @@
-import {useState} from "react";
+import React, {useCallback, useState} from "react";
 import UploadImageForm from "./UploadImageForm";
 import "../styles/UploadImageButton.css";
 
-const UploadImageButton = () => {
+const UploadImageButton = React.memo(() => {
     const [isFormOpen, setIsFormOpen] = useState(false);
 
     const openForm = () => setIsFormOpen(true);
-    const closeForm = () => setIsFormOpen(false);
+    const closeForm = useCallback(() => setIsFormOpen(false), []);
 
     return (
         <div>
@@ -19,6 +19,6 @@ const UploadImageButton = () => {
             {isFormOpen && <UploadImageForm onClose={closeForm}/>}
         </div>
     );
-};
+});
 
 export default UploadImageButton;

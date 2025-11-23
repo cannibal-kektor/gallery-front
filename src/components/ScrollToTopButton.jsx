@@ -1,7 +1,7 @@
-import {useState, useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import "../styles/ScrollToTopButton.css";
 
-const ScrollToTopButton = () => {
+const ScrollToTopButton = React.memo(() => {
     const [isVisible, setIsVisible] = useState(false);
 
     const scrollToTop = () => {
@@ -19,9 +19,7 @@ const ScrollToTopButton = () => {
         );
 
         const header = document.querySelector(".gallery-header");
-        if (header) {
-            observer.observe(header);
-        }
+        if (header) observer.observe(header);
 
         return () => observer.disconnect();
     }, []);
@@ -33,6 +31,6 @@ const ScrollToTopButton = () => {
             ↑
         </button>
     );
-};
+});
 
 export default ScrollToTopButton;

@@ -4,12 +4,12 @@ import EditImage from "./EditImage.jsx";
 import "../styles/EditPanel.css";
 
 const EditPanel = ({image, imageIndex}) => {
+
     const [isDeleteConfirmOpened, setDeleteConfirmationOpen] = useState(false);
     const [isEditPanelOpened, setEditPanelOpened] = useState(false);
 
     const openDeleteConfirm = () => setDeleteConfirmationOpen(true);
     const closeDeleteConfirm = () => setDeleteConfirmationOpen(false);
-
     const openEditPanel = () => setEditPanelOpened(true);
     const closeEditPanel = () => setEditPanelOpened(false);
 

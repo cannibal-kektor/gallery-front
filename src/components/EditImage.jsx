@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import {useDispatch} from "react-redux";
 import GenericForm from "./GenericForm.jsx";
 import {description} from "../utils/formFields.js";
@@ -11,7 +11,7 @@ const EditImage = ({image, imageIndex, onClose}) => {
     const [error, setError] = useState("");
     const dispatch = useDispatch();
 
-    const submitAction = (formData) => {
+    const submitAction = useCallback((formData) => {
         setProcessing(true);
         setError("");
 
@@ -19,7 +19,7 @@ const EditImage = ({image, imageIndex, onClose}) => {
             .then(() => onClose())
             .catch((error) => setError(error.response?.data?.detail || "Edit failed"))
             .finally(() => setProcessing(false));
-    };
+    }, [image.id, imageIndex, onClose, dispatch]);
 
     return (
         <Overlay onClose={onClose}>

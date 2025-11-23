@@ -4,26 +4,27 @@ import {login} from "../actions/authThunks.js";
 import {useNavigate} from "react-router-dom";
 import GenericForm from "./GenericForm.jsx";
 import {username, password} from "../utils/formFields.js";
+import {selectUser} from "../store/selectors.js";
 import "../styles/AuthorizationEnter.css";
+
+
+const loginFields = [username, password];
+const registerLink = {to: "/register", text: "Registration"};
 
 const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {user} = useSelector((state) => state.auth);
+    const user = useSelector(selectUser);
 
     const [processing, setProcessing] = useState(false);
     const [errorInfo, setErrorInfo] = useState(null);
 
     useEffect(() => {
-        if (user) {
-            navigate("/");
-        }
+        if (user) navigate("/");
     }, [user, navigate]);
 
     const submitAction = (formData) => {
-        if (processing) {
-            return;
-        }
+        if (processing) return;
         setProcessing(true);
         dispatch(login(formData))
             .unwrap()
@@ -32,9 +33,7 @@ const Login = () => {
     };
 
     useEffect(() => {
-        return () => {
-            setErrorInfo(null);
-        };
+        return () => setErrorInfo(null);
     }, [dispatch]);
 
     return (
@@ -42,10 +41,10 @@ const Login = () => {
             <GenericForm
                 title="Sign in"
                 submitAction={submitAction}
-                fields={[username, password]}
+                fields={loginFields}
                 processing={processing}
                 errorInfo={errorInfo}
-                link={{to: "/register", text: "Registration"}}
+                link={registerLink}
                 buttonText="Login"
             />
         </div>

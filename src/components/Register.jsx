@@ -5,26 +5,26 @@ import {useNavigate} from "react-router-dom";
 import GenericForm from "./GenericForm.jsx";
 import {username, password, email} from "../utils/formFields.js";
 import "../styles/AuthorizationEnter.css";
+import {selectUser} from "../store/selectors.js";
+
+const registerFields = [username, password, email];
+const loginLink = {to: "/login", text: "Sign in"};
 
 const Register = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const {user} = useSelector((state) => state.auth);
+    const user = useSelector(selectUser);
 
     const [processing, setProcessing] = useState(false);
     const [errorInfo, setErrorInfo] = useState(null);
 
     useEffect(() => {
-        if (user) {
-            navigate("/");
-        }
+        if (user) navigate("/");
     }, [user, navigate]);
 
     const submitAction = (formData) => {
-        if (processing) {
-            return;
-        }
+        if (processing) return;
         setProcessing(true);
         dispatch(register(formData))
             .unwrap()
@@ -33,22 +33,17 @@ const Register = () => {
             .finally(() => setProcessing(false));
     };
 
-    useEffect(() => {
-        return () => {
-            setErrorInfo(null);
-        };
-    }, [dispatch]);
-
+    useEffect(() => () => setErrorInfo(null), [dispatch]);
 
     return (
         <div className="authorization-container">
             <GenericForm
                 title="Registration"
                 submitAction={submitAction}
-                fields={[username, password, email]}
+                fields={registerFields}
                 processing={processing}
                 errorInfo={errorInfo}
-                link={{to: "/login", text: "Sign in"}}
+                link={loginLink}
                 buttonText="Register"
             />
         </div>

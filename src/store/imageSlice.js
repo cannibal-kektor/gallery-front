@@ -8,17 +8,23 @@ const imageSlice = createSlice({
         hasNext: true,
         sortBy: "uploadedAt",
         sortOrder: "desc",
+        dateRange: null,
         tillDate: null
     },
     reducers: {
-        setSort: (state, action) => {
-            state.sortBy = action.payload.sortBy;
-            state.sortOrder = action.payload.sortOrder;
+        toggleSort: (state, action) => {
+            const newSortBy = action.payload;
+            if (newSortBy === state.sortBy) {
+                state.sortOrder = state.sortOrder === "asc" ? "desc" : "asc";
+            } else {
+                state.sortBy = newSortBy;
+                state.sortOrder = "desc";
+            }
             state.images = [];
             state.hasNext = true;
         },
         setDateRange: (state, action) => {
-            state.tillDate = action.payload.tillDate;
+            state.dateRange = action.payload;
             state.images = [];
             state.hasNext = true;
         },
@@ -56,5 +62,5 @@ const imageSlice = createSlice({
     }
 });
 
-export const {setSort, setDateRange, clearImages} = imageSlice.actions;
+export const {toggleSort, setDateRange, clearImages} = imageSlice.actions;
 export default imageSlice.reducer;

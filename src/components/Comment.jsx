@@ -1,18 +1,14 @@
 import {Link} from "react-router-dom";
 import {formatDate} from "../utils/utils.js";
-import {useSelector} from "react-redux";
+import React from "react";
 import "../styles/Comment.css";
 
-const Comment = ({comment, onDelete}) => {
-
-    const {user} = useSelector((state) => state.auth);
-
-    return (
+const Comment = React.memo(({comment, onDelete, currentUserId}) => (
         <div key={comment.id} className="comment-item">
             <div className="comment-header">
                 <Link className="comment-author" to={"/user/" + comment.username}>{comment.username}</Link>
                 <div className="comment-right-section">
-                    {user.id === comment.userId &&
+                    {currentUserId === comment.userId &&
                         <button className="delete-comment-btn"
                                 onClick={() => onDelete(comment)}>
                             Remove 🗑
@@ -22,7 +18,7 @@ const Comment = ({comment, onDelete}) => {
             </div>
             <p className="comment-text">{comment.content}</p>
         </div>
-    );
-};
+    )
+);
 
 export default Comment;

@@ -1,39 +1,36 @@
 import {useDispatch, useSelector} from "react-redux";
-import {setSort} from "../store/imageSlice.js";
-import '../styles/SortControls.css';
+import {toggleSort} from "../store/imageSlice.js";
+import React, {useCallback} from "react";
+import {selectSortParams} from "../store/selectors.js";
+import "../styles/SortControls.css";
 
-const SortControls = () => {
+const SortControls = React.memo(() => {
 
     const dispatch = useDispatch();
-    const { sortBy, sortOrder } = useSelector((state) => state.images);
+    const {sortBy, sortOrder} = useSelector(selectSortParams);
 
-    const handleSortChange = (newSortBy) => {
-        let newSortOrder = 'desc';
+    const handleSortChange = useCallback(newSortBy => dispatch(toggleSort(newSortBy))
+        , [dispatch]);
 
-        if (newSortBy === sortBy) {
-            newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-        }
-
-        dispatch(setSort({ sortBy: newSortBy, sortOrder: newSortOrder }));
-    };
+    const getSortBtnClassName = (btnSort) => `sort-btn ${sortBy === btnSort ? "active" : ""}`;
 
     return (
         <div className="sort-controls">
             <span>Sort by:</span>
             <button
-                className={`sort-btn ${sortBy === 'uploadedAt' ? 'active' : ''}`}
-                onClick={() => handleSortChange('uploadedAt')}
+                className={getSortBtnClassName("uploadedAt")}
+                onClick={() => handleSortChange("uploadedAt")}
             >
-                Date {sortBy === 'uploadedAt' && (sortOrder === 'asc' ? '↑' : '↓')}
+                Date {sortBy === "uploadedAt" && (sortOrder === "asc" ? "↑" : "↓")}
             </button>
             <button
-                className={`sort-btn ${sortBy === 'likesCount' ? 'active' : ''}`}
-                onClick={() => handleSortChange('likesCount')}
+                className={getSortBtnClassName("likesCount")}
+                onClick={() => handleSortChange("likesCount")}
             >
-                Likes {sortBy === 'likesCount' && (sortOrder === 'asc' ? '↑' : '↓')}
+                Likes {sortBy === "likesCount" && (sortOrder === "asc" ? "↑" : "↓")}
             </button>
         </div>
     );
-};
+});
 
 export default SortControls;

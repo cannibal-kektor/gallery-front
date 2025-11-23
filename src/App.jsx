@@ -8,27 +8,25 @@ import AppLayout from "./components/AppLayout.jsx";
 import AllUsersImages from "./components/AllUsersImages.jsx";
 import UserImages from "./components/UserImages.jsx";
 
-function App() {
-    return (
-        <Provider store={store}>
-            <BrowserRouter>
-                <div className="App">
-                    <Routes>
-                        <Route path="/login" element={<Login/>}/>
-                        <Route path="/register" element={<Register/>}/>
-                        <Route path="/" element={
-                            <Authenticated>
-                                <AppLayout/>
-                            </Authenticated>}>
-                            <Route index element={<AllUsersImages/>}></Route>
-                            <Route path="user/:username" element={<UserImages/>}></Route>
-                        </Route>
-                        <Route path="*" element={<Navigate to="/" replace/>}/>
-                    </Routes>
-                </div>
-            </BrowserRouter>
-        </Provider>
-    );
-}
+const App = () => (
+    <Provider store={store}>
+        <BrowserRouter>
+            <div className="App">
+                <Routes>
+                    <Route path="/login" element={<Login/>}/>
+                    <Route path="/register" element={<Register/>}/>
+                    <Route path="/" element={
+                        <Authenticated>
+                            <AppLayout/>
+                        </Authenticated>}>
+                        <Route index element={<AllUsersImages/>}></Route>
+                        <Route path="user/:username" element={<UserImages/>}></Route>
+                    </Route>
+                    <Route path="*" element={<Navigate to="/" replace/>}/>
+                </Routes>
+            </div>
+        </BrowserRouter>
+    </Provider>
+);
 
 export default App;

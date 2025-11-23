@@ -3,10 +3,9 @@ import ConfirmationDialog from "./ConfirmationDialog.jsx";
 
 const DeleteCommentConfirmation = ({commentId, onClose, refreshComments}) => {
 
-    const deleteCommentAction = () => {
-        return commentService.deleteComment(commentId)
+    const deleteCommentAction = () =>
+        commentService.deleteComment(commentId)
             .then(() => refreshComments());
-    };
 
     return (
         <ConfirmationDialog

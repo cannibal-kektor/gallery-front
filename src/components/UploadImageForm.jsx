@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useCallback, useState} from "react";
 import {useDispatch} from "react-redux";
 import {imageService} from "../services/imageService";
 import {clearImages} from "../store/imageSlice.js";
@@ -12,7 +12,7 @@ const UploadImageForm = ({onClose}) => {
     const [error, setError] = useState("");
     const dispatch = useDispatch();
 
-    const submitAction = (formData) => {
+    const submitAction = useCallback((formData) => {
         setUploading(true);
         setError("");
 
@@ -25,7 +25,7 @@ const UploadImageForm = ({onClose}) => {
             .then(() => dispatch(clearImages()))
             .catch((error) => setError(error.response?.data?.detail || "Upload failed"))
             .finally(() => setUploading(false));
-    };
+    }, [onClose, dispatch]);
 
     return (
         <Overlay onClose={onClose}>

@@ -1,24 +1,25 @@
 import {useNavigate} from "react-router-dom";
-import {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {logout} from "../actions/authThunks.js";
 import {useDispatch, useSelector} from "react-redux";
+import {selectUser} from "../store/selectors.js";
 import "../styles/UserInfoPanel.css";
 
-const UserInfoPanel = () => {
+const UserInfoPanel = React.memo(() => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {user} = useSelector((state) => state.auth);
+    const user = useSelector(selectUser);
     const [loggingOut, setLoggingOut] = useState(false);
 
-    const handleLogout = () => {
+    const handleLogout = useCallback(() => {
         setLoggingOut(true);
         dispatch(logout())
             .unwrap()
             .then(() => navigate("/login"))
             .catch(error => console.error("Logout failed:", error.detail))
             .finally(() => setLoggingOut(false));
-    };
+    }, [navigate, dispatch]);
 
     return (
         <div className="user-info">
@@ -28,6 +29,6 @@ const UserInfoPanel = () => {
             </button>
         </div>
     );
-};
+});
 
 export default UserInfoPanel;

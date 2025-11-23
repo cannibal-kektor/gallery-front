@@ -1,28 +1,29 @@
+import React from "react";
 import "../styles/FormInput.css";
 
-const InputField = ({
-                        id,
-                        name,
-                        type = "text",
-                        value,
-                        onChange,
-                        label,
-                        error,
-                        required = true
-                    }) => {
+const InputField = React.memo(({
+                                   id,
+                                   name,
+                                   type = "text",
+                                   value,
+                                   onChange,
+                                   label,
+                                   error,
+                                   required = true
+                               }) => {
 
     const isTextArea = type === "textArea";
 
     let valueProp;
     switch (type) {
         case "textArea":
-            valueProp = { defaultValue: value };
+            valueProp = {defaultValue: value};
             break;
         case "file":
             valueProp = {};
             break;
         default:
-            valueProp = { value: value || "" };
+            valueProp = {value: value || ""};
     }
 
     const commonProps = {
@@ -52,6 +53,6 @@ const InputField = ({
             {error && <div className="form-input-validation-error">{error}</div>}
         </div>
     );
-};
+});
 
 export default InputField;

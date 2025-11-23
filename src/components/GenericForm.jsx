@@ -1,14 +1,14 @@
 import {Link} from "react-router-dom";
 import InputField from "./InputField.jsx";
 import {validateForm} from "../utils/inputValidator.js";
-import {useState} from "react";
+import {useCallback, useMemo, useState} from "react";
 import CloseButton from "./CloseButton.jsx";
 import "../styles/GenericForm.css";
 
 const GenericForm = ({
+                         fields,
                          submitAction,
                          title,
-                         fields,
                          processing,
                          errorInfo,
                          link,
@@ -16,28 +16,27 @@ const GenericForm = ({
                          onClose
                      }) => {
 
-    const [formData, setFormData] = useState(getInitialFormData(fields));
+    const initialFormData = useMemo(() =>
+        fields.reduce((acc, field) => {
+            acc[field.name] = null;
+            return acc;
+        }, {}), [fields]
+    );
+
+    const [formData, setFormData] = useState(initialFormData);
     const [validationErrors, setValidationErrors] = useState({});
 
-
-    function getInitialFormData(fields) {
-        return fields.reduce((accumulator, field) => {
-            accumulator[field.name] = null;
-            return accumulator;
-        }, {});
-    }
-
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
+    const handleChange = useCallback((e) => {
+        setFormData(prev => ({
+            ...prev,
             [e.target.name]: e.target.type === "file" ?
                 e.target.files[0] : e.target.value,
-        });
-        setValidationErrors({
-            ...validationErrors,
+        }));
+        setValidationErrors(prev => ({
+            ...prev,
             [e.target.name]: ""
-        });
-    };
+        }));
+    }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();

@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import ImageBox from "./ImageBox.jsx";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -12,30 +12,45 @@ import "../styles/ImagesGrid.css";
 const ImagesGrid = ({images, onLoadMore, hasMore}) => {
 
     const dispatch = useDispatch();
-    const [selectedImage, setSelectedImage] = useState(null);
-    const [selectedImageIndex, setSelectedImageIndex] = useState(null);
     const infiniteScrollRef = useRef(null);
 
-    useEffect(() => {
-        return () => {
-            handleCloseModal();
-        };
+    const [imageModalOpened, setImageModalOpened] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedImageIndex, setSelectedImageIndex] = useState(null);
+
+    const handleImageClick = useCallback((image, index) => {
+        setSelectedImage(image);
+        setSelectedImageIndex(index);
+        setImageModalOpened(true);
     }, []);
 
-    useEffect(() => {
-        if (selectedImage) {
-            setSelectedImage(images[selectedImageIndex]);
-        }
-    }, [images]);
+    const handleCloseModal = useCallback(() => {
+        setSelectedImage(null);
+        setSelectedImageIndex(null);
+        setImageModalOpened(false);
+    }, []);
 
-    const pullDownEvents = [
+    useEffect(() => () => handleCloseModal(), [handleCloseModal]);
+
+    useEffect(() => {
+        if (selectedImage && selectedImageIndex !== null) {
+            const updatedImage = images[selectedImageIndex];
+            if (updatedImage && updatedImage.id === selectedImage.id) {
+                setSelectedImage(updatedImage);
+            }else {
+                handleCloseModal();
+            }
+        }
+    }, [images, selectedImage, selectedImageIndex, handleCloseModal]);
+
+    const pullDownEvents = useMemo(() => [
         ["touchstart", "onStart"],
         ["touchmove", "onMove"],
         ["touchend", "onEnd"],
         ["mousedown", "onStart"],
         ["mousemove", "onMove"],
         ["mouseup", "onEnd"],
-    ];
+    ], []);
 
     useEffect(() => {
         const scrollComponent = infiniteScrollRef.current;
@@ -47,23 +62,14 @@ const ImagesGrid = ({images, onLoadMore, hasMore}) => {
         } else
             pullDownEvents.forEach(([event, handlerName]) =>
                 scrollElement.addEventListener(event, scrollComponent[handlerName]));
-    }, [selectedImage]);
+    }, [imageModalOpened, selectedImage, pullDownEvents]);
 
-    const refreshContent = () => {
+    const refreshContent = useCallback(() => {
         if (!selectedImage) {
             dispatch(clearImages());
         }
-    };
+    }, [selectedImage, dispatch]);
 
-    const handleImageClick = (image, index) => {
-        setSelectedImage(image);
-        setSelectedImageIndex(index);
-    };
-
-    const handleCloseModal = () => {
-        setSelectedImage(null);
-        setSelectedImageIndex(null);
-    };
 
     return (
         <div className="image-grid-container" id="scrollableDiv">
@@ -91,7 +97,7 @@ const ImagesGrid = ({images, onLoadMore, hasMore}) => {
                 </div>
             </InfiniteScroll>
 
-            {selectedImage && (
+            {imageModalOpened && (
                 <ImageModal
                     image={selectedImage}
                     imageIndex={selectedImageIndex}

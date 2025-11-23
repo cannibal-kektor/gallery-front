@@ -7,10 +7,9 @@ const DeleteImageConfirmation = ({imageId, onClose}) => {
 
     const dispatch = useDispatch();
 
-    const deleteImageAction = () => {
-        return imageService.deleteImage(imageId)
+    const deleteImageAction = () =>
+        imageService.deleteImage(imageId)
             .then(() => dispatch(clearImages()));
-    };
 
     return (
         <ConfirmationDialog

@@ -1,7 +1,7 @@
+import React from "react";
 import "../styles/Like.css";
 
-const Like = ({isLiked, likesCount, onLikeClick}) => {
-    return (
+const Like = React.memo(({isLiked, likesCount, onLikeClick}) => (
         <div className="like-container" onClick={onLikeClick}>
             <span className="image-like-icon">
                 {isLiked ? "❤️" : "♡"}
@@ -10,7 +10,7 @@ const Like = ({isLiked, likesCount, onLikeClick}) => {
                 {likesCount}
             </span>
         </div>
-    );
-};
+    )
+);
 
 export default Like;

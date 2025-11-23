@@ -1,22 +1,23 @@
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import ImageMeta from "./ImageMeta";
 import CloseButton from "./CloseButton";
 import CommentsSection from "./CommentsSection.jsx";
 import {useSelector} from "react-redux";
 import EditPanel from "./EditPanel.jsx";
 import Overlay from "./Overlay.jsx";
+import {selectUser} from "../store/selectors.js";
 import "../styles/ImageModal.css";
 
-const ImageModal = ({image, imageIndex, onClose}) => {
+const ImageModal = React.memo(({image, imageIndex, onClose}) => {
 
-    const {user} = useSelector((state) => state.auth);
+    const user = useSelector(selectUser);
 
     useEffect(() => {
         document.body.style.overflow = "hidden";
         return () => {
             document.body.style.overflow = "unset";
         };
-    }, [image]);
+    }, []);
 
     return (
         <Overlay onClose={onClose}>
@@ -38,7 +39,7 @@ const ImageModal = ({image, imageIndex, onClose}) => {
                     </div>
 
                     <div className="info-section">
-                        { user.id === image.userId &&
+                        {user.id === image.userId &&
                             <EditPanel
                                 image={image}
                                 imageIndex={imageIndex}/>}
@@ -55,6 +56,6 @@ const ImageModal = ({image, imageIndex, onClose}) => {
             </div>
         </Overlay>
     );
-};
+});
 
 export default ImageModal;

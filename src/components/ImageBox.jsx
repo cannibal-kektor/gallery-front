@@ -1,18 +1,13 @@
 import ImageMeta from "./ImageMeta.jsx";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import "../styles/ImageBox.css";
 
-const ImageBox = ({image, index, onImageClick}) => {
+const ImageBox = React.memo(({image, index, onImageClick}) => {
 
     const [isVisible, setIsVisible] = useState(false);
+    const handleImageClick = () => onImageClick(image, index);
 
-    useEffect(() => {
-        setIsVisible(true);
-    }, []);
-
-    const handleImageClick = () => {
-        onImageClick(image, index);
-    };
+    useEffect(() => setIsVisible(true), []);
 
     let imageClass = `image-box ${isVisible ? "image-card-fade-in" : "image-card-fade-out"}`;
 
@@ -33,6 +28,6 @@ const ImageBox = ({image, index, onImageClick}) => {
             </div>
         </div>
     );
-};
+});
 
 export default ImageBox;
