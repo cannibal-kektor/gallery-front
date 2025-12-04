@@ -6,7 +6,7 @@ export const userService = {
         return publicAPI.post("/users/register", {username, password, email});
     },
 
-    getUserInfo: (username) => {
-        return protectedApi.get(`/users/username/${username}`);
+    getUserInfo: () => {
+        return protectedApi.get("/users/current");
     }
 };
