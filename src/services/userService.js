@@ -1,4 +1,4 @@
-import {publicAPI, api} from "../api/api.js";
+import {publicAPI, protectedApi} from "../api/api.js";
 
 export const userService = {
 
@@ -6,7 +6,7 @@ export const userService = {
         return publicAPI.post("/users/register", {username, password, email});
     },
 
-    getUserInfo: (username) => {
-        return api.get(`/users/username/${username}`);
+    getUserInfo: () => {
+        return protectedApi.get("/users/current");
     }
 };

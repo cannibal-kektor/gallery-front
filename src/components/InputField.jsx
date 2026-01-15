@@ -1,23 +1,58 @@
-const InputField = ({
-                        id, name, type = "text",
-                        value, onChange, label,
-                        error, required = true
-                    }) => {
+import React from "react";
+import "../styles/FormInput.css";
+
+const InputField = React.memo(({
+                                   id,
+                                   name,
+                                   type = "text",
+                                   value,
+                                   onChange,
+                                   label,
+                                   error,
+                                   required = true
+                               }) => {
+
+    const isTextArea = type === "textArea";
+
+    let valueProp;
+    switch (type) {
+        case "textArea":
+            valueProp = {defaultValue: value};
+            break;
+        case "file":
+            valueProp = {};
+            break;
+        default:
+            valueProp = {value: value || ""};
+    }
+
+    const commonProps = {
+        id,
+        name,
+        onChange,
+        required,
+        className: error ? "input-error" : ""
+    };
+
     return (
         <div className="form-input">
             <label htmlFor={id}>{label}</label>
-            <input
-                type={type}
-                id={id}
-                name={name}
-                value={value}
-                onChange={onChange}
-                required={required}
-                className={error ? "input-error" : ""}
-            />
-            {error && <div className="validation-error">{error}</div>}
+            {!isTextArea ? (
+                <input
+                    type={type}
+                    {...commonProps}
+                    {...valueProp}
+                />
+            ) : (
+                <textarea
+                    {...commonProps}
+                    {...valueProp}
+                    rows={4}
+                />
+            )}
+            {error && <div className="form-input-validation-error">{error}</div>}
         </div>
     );
-};
+});
 
 export default InputField;

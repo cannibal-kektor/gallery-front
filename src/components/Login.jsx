@@ -1,84 +1,53 @@
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {login} from "../actions/authThunks.js";
-import {clearErrorMsg} from "../store/authenticationSlice.js";
 import {useNavigate} from "react-router-dom";
-import {validateForm} from "../utils/inputValidator.js";
-import AuthForm from "./AuthForm.jsx";
+import GenericForm from "./GenericForm.jsx";
+import {username, password} from "../utils/formFields.js";
+import {selectUser} from "../store/selectors.js";
+import "../styles/AuthorizationEnter.css";
+
+
+const loginFields = [username, password];
+const registerLink = {to: "/register", text: "Registration"};
 
 const Login = () => {
-    const [formData, setFormData] = useState({username: "", password: ""});
-    const [validationErrors, setValidationErrors] = useState({});
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {user, processing, errorInfo} = useSelector((state) => state.auth);
+    const user = useSelector(selectUser);
+
+    const [processing, setProcessing] = useState(false);
+    const [errorInfo, setErrorInfo] = useState(null);
 
     useEffect(() => {
-        if (user) {
-            navigate("/");
-        }
+        if (user) navigate("/");
     }, [user, navigate]);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const errors = validateForm(formData);
-        if (Object.values(errors).some(error => error !== "")) {
-            setValidationErrors(errors);
-            return;
-        }
-
-        dispatch(login(formData));
+    const submitAction = (formData) => {
+        if (processing) return;
+        setProcessing(true);
+        dispatch(login(formData))
+            .unwrap()
+            .catch(error => setErrorInfo(error.detail))
+            .finally(() => setProcessing(false));
     };
 
     useEffect(() => {
-        return () => {
-            dispatch(clearErrorMsg());
-        };
+        return () => setErrorInfo(null);
     }, [dispatch]);
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-        setValidationErrors({
-            username: "",
-            password: ""
-        });
-    };
-
-    const inputFields = [
-        {
-            id: "login-username",
-            name: "username",
-            type: "text",
-            label: "Username",
-            value: formData.username,
-            onChange: handleChange,
-            error: validationErrors.username
-        },
-        {
-            id: "login-password",
-            name: "password",
-            type: "password",
-            label: "Password",
-            value: formData.password,
-            onChange: handleChange,
-            error: validationErrors.password
-        }
-    ];
-
     return (
-        <AuthForm
-            title="Sign in"
-            fields={inputFields}
-            onSubmit={handleSubmit}
-            processing={processing}
-            errorInfo={errorInfo}
-            link={{to: "/register", text: "Registration"}}
-            buttonText="Login"
-        />
+        <div className="authorization-container">
+            <GenericForm
+                title="Sign in"
+                submitAction={submitAction}
+                fields={loginFields}
+                processing={processing}
+                errorInfo={errorInfo}
+                link={registerLink}
+                buttonText="Login"
+            />
+        </div>
     );
 
 };

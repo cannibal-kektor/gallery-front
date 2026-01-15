@@ -9,7 +9,7 @@ export const login =
             try {
                 let response = await authService.login(username, password);
                 setTokens(response.data.accessToken, response.data.refreshToken);
-                response = await userService.getUserInfo(username);
+                response = await userService.getUserInfo();
                 setUser(response.data);
                 return response.data;
             } catch (error) {

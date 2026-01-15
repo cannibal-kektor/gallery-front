@@ -1,97 +1,52 @@
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {register} from "../actions/authThunks.js";
-import {clearErrorMsg} from "../store/authenticationSlice.js";
 import {useNavigate} from "react-router-dom";
-import {validateForm} from "../utils/inputValidator.js";
-import AuthForm from "./AuthForm.jsx";
+import GenericForm from "./GenericForm.jsx";
+import {username, password, email} from "../utils/formFields.js";
+import "../styles/AuthorizationEnter.css";
+import {selectUser} from "../store/selectors.js";
+
+const registerFields = [username, password, email];
+const loginLink = {to: "/login", text: "Sign in"};
 
 const Register = () => {
-    const [formData, setFormData] = useState({username: "", email: "", password: ""});
-    const [validationErrors, setValidationErrors] = useState({});
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const {user, processing, errorInfo} = useSelector((state) => state.auth);
+
+    const user = useSelector(selectUser);
+
+    const [processing, setProcessing] = useState(false);
+    const [errorInfo, setErrorInfo] = useState(null);
 
     useEffect(() => {
-        if (user) {
-            navigate("/");
-        }
+        if (user) navigate("/");
     }, [user, navigate]);
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-        setValidationErrors({
-            username: "",
-            password: ""
-        });
+    const submitAction = (formData) => {
+        if (processing) return;
+        setProcessing(true);
+        dispatch(register(formData))
+            .unwrap()
+            .then(() => navigate("/login"))
+            .catch(error => setErrorInfo(error.detail))
+            .finally(() => setProcessing(false));
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const errors = validateForm(formData);
-
-        if (Object.values(errors).some(error => error !== "")) {
-            setValidationErrors(errors);
-            return;
-        }
-
-        const actionResult = await dispatch(register(formData));
-        if (register.fulfilled.match(actionResult)) {
-            navigate("/login");
-        }
-    };
-
-    useEffect(() => {
-        return () => {
-            dispatch(clearErrorMsg());
-        };
-    }, [dispatch]);
-
-    const inputFields = [
-        {
-            id: "reg-username",
-            name: "username",
-            type: "text",
-            label: "Username",
-            value: formData.username,
-            onChange: handleChange,
-            error: validationErrors.username
-        },
-        {
-            id: "reg-email",
-            name: "email",
-            type: "email",
-            label: "Email",
-            value: formData.email,
-            onChange: handleChange,
-            error: validationErrors.email
-        },
-        {
-            id: "reg-password",
-            name: "password",
-            type: "password",
-            label: "Password",
-            value: formData.password,
-            onChange: handleChange,
-            error: validationErrors.password
-        }
-    ];
+    useEffect(() => () => setErrorInfo(null), [dispatch]);
 
     return (
-        <AuthForm
-            title="Registration"
-            fields={inputFields}
-            onSubmit={handleSubmit}
-            processing={processing}
-            errorInfo={errorInfo}
-            link={{to: "/login", text: "Sign in"}}
-            buttonText="Register"
-        />
+        <div className="authorization-container">
+            <GenericForm
+                title="Registration"
+                submitAction={submitAction}
+                fields={registerFields}
+                processing={processing}
+                errorInfo={errorInfo}
+                link={loginLink}
+                buttonText="Register"
+            />
+        </div>
     );
 };
 
